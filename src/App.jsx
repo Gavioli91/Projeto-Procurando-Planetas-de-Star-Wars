@@ -1,15 +1,13 @@
-import React, { Provider } from 'react';
+import React from 'react';
 import './App.css';
-// import Table from './tests';
+import Table from './Pages/Table';
+import PlanetProvider from './Context/PlanetProvider';
 
 function App() {
-  const endpoint = 'https://swapi.dev/api/planets';
-  console.log(endpoint);
-
   return (
-    <Provider>
-      <span>Hello, world</span>
-    </Provider>
+    <PlanetProvider>
+      <Table />
+    </PlanetProvider>
   );
 }
 

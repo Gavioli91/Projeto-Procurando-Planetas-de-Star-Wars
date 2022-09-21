@@ -1,27 +1,65 @@
-import React, { useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PlanetContext from '../Context/PlanetContext';
 
-function Table() {
+const Table = () => {
+  const [planetName, setPlanetName] = useState('');
   const { planet } = useContext(PlanetContext);
-  const returnPlanet = planet.map((planetas, i) => (
+  const [filterPlanet, setFilterPlanet] = useState([]);
+  useEffect(() => {
+    setFilterPlanet(planet.filter((planetas) => planetas.name.includes(planetName)));
+  },
+  [planetName, planet]);
+  const returnPlanet = filterPlanet.map((planetas, i) => (
     <tr key={ i }>
-      <td>{planetas.name}</td>
-      <td>{planetas.rotation_period}</td>
-      <td>{planetas.orbital_period}</td>
-      <td>{planetas.diameter}</td>
-      <td>{planetas.climate}</td>
-      <td>{planetas.gravity}</td>
-      <td>{planetas.terrain}</td>
-      <td>{planetas.surface_water}</td>
-      <td>{planetas.population}</td>
-      <td>{planetas.films}</td>
-      <td>{planetas.created}</td>
-      <td>{planetas.edited}</td>
-      <td>{planetas.url}</td>
+      <td>
+        {planetas.name}
+      </td>
+      <td>
+        {planetas.rotation_period}
+      </td>
+      <td>
+        {planetas.orbital_period}
+      </td>
+      <td>
+        {planetas.diameter}
+      </td>
+      <td>
+        {planetas.climate}
+      </td>
+      <td>
+        {planetas.gravity}
+      </td>
+      <td>
+        {planetas.terrain}
+      </td>
+      <td>
+        {planetas.surface_water}
+      </td>
+      <td>
+        {planetas.population}
+      </td>
+      <td>
+        {planetas.films}
+      </td>
+      <td>
+        {planetas.created}
+      </td>
+      <td>
+        {planetas.edited}
+      </td>
+      <td>
+        {planetas.url}
+      </td>
     </tr>
   ));
   return (
     <div>
+      <input
+        type="text"
+        data-testid="name-filter"
+        name="name"
+        onChange={ (e) => setPlanetName(e.target.value) }
+      />
       <table>
         <thead>
           <tr>
@@ -44,6 +82,6 @@ function Table() {
       </table>
     </div>
   );
-}
+};
 
 export default Table;

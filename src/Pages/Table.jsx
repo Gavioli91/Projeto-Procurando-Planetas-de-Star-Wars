@@ -8,150 +8,97 @@ const Table = () => {
   const [markPlanet, setMarkPlanet] = useState('population');
   const [equalPlanets, setEqualPlanets] = useState('maior que');
   const [theAmount, setTheAmount] = useState(0);
-  const [selection, setSelection] = useState(['population',
-    'orbital_period',
-    'diameter',
-    'rotation_period',
-    'surface_water',
-  ]);
-  const [forms, setForms] = useState({ filterPlanet: [] });
 
   useEffect(() => {
-    setFilterPlanet(planet.filter((planetas) => planetas.name.includes(planetName)));
+    setFilterPlanet(planet.filter((item) => item.name.includes(planetName)));
   },
   [planetName, planet]);
 
   const filterAmount = () => {
-    const parameters = { equalPlanets, markPlanet, theAmount };
     if (equalPlanets === 'maior que') {
       const star = planet.filter((name) => Number(name[markPlanet]) > Number(theAmount));
       setFilterPlanet(star);
-      setForms((state) => ({
-        ...state, filterPlanet: [...state.filterPlanet, parameters] }));
-      const str = planet.filter((name) => Number(name[markPlanet]) > Number(theAmount));
-      setFilterPlanet(str);
     }
+
     if (equalPlanets === 'menor que') {
-      const str = planet.filter((name) => Number(name[markPlanet]) < Number(theAmount));
-      setFilterPlanet(str);
-      setForms((state) => ({
-        ...state, filterPlanet: [...state.filterPlanet, parameters] }));
+      const star = planet.filter((name) => Number(name[markPlanet]) < Number(theAmount));
+      setFilterPlanet(star);
     }
+
     if (equalPlanets === 'igual a') {
       const str = planet.filter((name) => Number(name[markPlanet]) === Number(theAmount));
       setFilterPlanet(str);
-      setForms((state) => ({
-        ...state, filterPlanet: [...state.filterPlanet, parameters] }));
     }
-    setListFilter((state) => ({
-      ...state,
-      filterede: [...state.filterede, valor] }));
   };
-  switch (markPlanet) {
-  case 'population':
-    setSelection(() => (['orbital_period',
-      'diameter', 'rotation_period', 'surface_water']));
-    break;
-  case 'orbital_period':
-    setSelection(() => ([
-      'diameter', 'rotation_period', 'surface_water']));
-    break;
-  case 'diameter':
-    setSelection(() => ([
-      'rotation_period', 'surface_water']));
-    break;
-  case 'rotation_period':
-    setSelection(() => (['surface_water']));
-    break;
-  case 'surface_water':
-    setSelection(() => ([]));
-    break;
-  default:
-    break;
-  }
 
-  const returnPlanet = filterPlanet.map((planetas, i) => (
-    <tbody key={ i }>
+  const returnPlanet = filterPlanet.map((name, index) => (
+    <tbody key={ index }>
       <tr>
         <td>
-          {planetas.name}
+          {name.name}
         </td>
         <td>
-          {planetas.rotation_period}
+          {name.rotation_period}
         </td>
         <td>
-          {planetas.orbital_period}
+          {name.orbital_period}
         </td>
         <td>
-          {planetas.diameter}
+          {name.diameter}
         </td>
         <td>
-          {planetas.climate}
+          {name.climate}
         </td>
         <td>
-          {planetas.gravity}
+          {name.gravity}
         </td>
         <td>
-          {planetas.terrain}
+          {name.terrain}
         </td>
         <td>
-          {planetas.surface_water}
+          {name.surface_water}
         </td>
         <td>
-          {planetas.population}
+          {name.population}
         </td>
         <td>
-          {planetas.films}
+          {name.films}
         </td>
         <td>
-          {planetas.created}
+          {name.created}
         </td>
         <td>
-          {planetas.edited}
+          {name.edited}
         </td>
         <td>
-          {planetas.url}
+          {name.url}
         </td>
       </tr>
     </tbody>
   ));
-  const answer = [forms];
-  let answerForms = [];
-  if (answer[0].filterPlanet.length > 0) {
-    answerForms = answer[0].filterPlanet.map((planets, i) => (
-      <div key={ i } data-testid="filter">
-        <p>{planets.i}</p>
-        <button
-          type="button"
-        >
-          X
-        </button>
-      </div>
-    ));
-  }
   return (
     <div>
       <select
-        name="selected"
+        name="markPlanet"
         data-testid="column-filter"
         value={ markPlanet }
         onChange={ (e) => setMarkPlanet(e.target.value) }
       >
-        {selection.map((planets, i) => (
-          <option key={ i }>
-            {planets}
-          </option>
-        ))}
+        <option value="population">population</option>
+        <option value="orbital_period">orbital_period</option>
+        <option value="diameter">diameter</option>
+        <option value="rotation_period">rotation_period</option>
+        <option value="surface_water">surface_water</option>
       </select>
       <select
-        name="igualdate"
+        name="equalPlanets"
         data-testid="comparison-filter"
-        // value={ equalPlanets }
+        value={ equalPlanets }
         onChange={ (e) => setEqualPlanets(e.target.value) }
       >
-        {selection.map((planetas, i) => (
-          <option key={ i }>{ planetas }</option>
-        ))}
+        <option value="maior que">maior que</option>
+        <option value="menor que">menor que</option>
+        <option value="igual a">igual a</option>
       </select>
       <input
         type="number"
@@ -165,7 +112,7 @@ const Table = () => {
         type="text"
         data-testid="name-filter"
         name="name"
-        // value={ planetName }
+        value={ planetName }
         onChange={ (e) => setPlanetName(e.target.value) }
       />
       <button
@@ -175,7 +122,6 @@ const Table = () => {
       >
         Filtrar
       </button>
-      {answerForms}
       <table>
         <thead>
           <tr>

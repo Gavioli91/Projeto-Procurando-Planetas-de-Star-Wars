@@ -10,9 +10,9 @@ const PlanetProvider = ({ children }) => {
       const starWarsAPI = 'https://swapi.dev/api/planets';
       const result = await fetch(starWarsAPI);
       const { results } = await result.json();
-      const returnPlanet = await results.map((item) => {
-        delete item.residents;
-        return item;
+      const returnPlanet = await results.map((worlds) => {
+        delete worlds.residents;
+        return worlds;
       });
       setPlanet(returnPlanet);
     };

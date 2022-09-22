@@ -8,6 +8,13 @@ const Table = () => {
   const [markPlanet, setMarkPlanet] = useState('population');
   const [equalPlanets, setEqualPlanets] = useState('maior que');
   const [theAmount, setTheAmount] = useState(0);
+  const [selection, setSelection] = useState(['population',
+    'orbital_period',
+    'diameter',
+    'rotation_period',
+    'surface_water',
+  ]);
+  const [forms, setForms] = useState({ filterPlanet: [] });
 
   useEffect(() => {
     setFilterPlanet(planet.filter((planetas) => planetas.name.includes(planetName)));
@@ -15,21 +22,53 @@ const Table = () => {
   [planetName, planet]);
 
   const filterAmount = () => {
+    const parameters = { equalPlanets, markPlanet, theAmount };
     if (equalPlanets === 'maior que') {
       const star = planet.filter((name) => Number(name[markPlanet]) > Number(theAmount));
       setFilterPlanet(star);
+      setForms((state) => ({
+        ...state, filterPlanet: [...state.filterPlanet, parameters] }));
+      const str = planet.filter((name) => Number(name[markPlanet]) > Number(theAmount));
+      setFilterPlanet(str);
     }
-
     if (equalPlanets === 'menor que') {
-      const star = planet.filter((name) => Number(name[markPlanet]) < Number(theAmount));
-      setFilterPlanet(star);
+      const str = planet.filter((name) => Number(name[markPlanet]) < Number(theAmount));
+      setFilterPlanet(str);
+      setForms((state) => ({
+        ...state, filterPlanet: [...state.filterPlanet, parameters] }));
     }
-
     if (equalPlanets === 'igual a') {
       const str = planet.filter((name) => Number(name[markPlanet]) === Number(theAmount));
       setFilterPlanet(str);
+      setForms((state) => ({
+        ...state, filterPlanet: [...state.filterPlanet, parameters] }));
     }
+    setListFilter((state) => ({
+      ...state,
+      filterede: [...state.filterede, valor] }));
   };
+  switch (markPlanet) {
+  case 'population':
+    setSelection(() => (['orbital_period',
+      'diameter', 'rotation_period', 'surface_water']));
+    break;
+  case 'orbital_period':
+    setSelection(() => ([
+      'diameter', 'rotation_period', 'surface_water']));
+    break;
+  case 'diameter':
+    setSelection(() => ([
+      'rotation_period', 'surface_water']));
+    break;
+  case 'rotation_period':
+    setSelection(() => (['surface_water']));
+    break;
+  case 'surface_water':
+    setSelection(() => ([]));
+    break;
+  default:
+    break;
+  }
 
   const returnPlanet = filterPlanet.map((planetas, i) => (
     <tbody key={ i }>
@@ -76,19 +115,33 @@ const Table = () => {
       </tr>
     </tbody>
   ));
+  const answer = [forms];
+  let answerForms = [];
+  if (answer[0].filterPlanet.length > 0) {
+    answerForms = answer[0].filterPlanet.map((planets, i) => (
+      <div key={ i } data-testid="filter">
+        <p>{planets.i}</p>
+        <button
+          type="button"
+        >
+          X
+        </button>
+      </div>
+    ));
+  }
   return (
     <div>
       <select
         name="selected"
         data-testid="column-filter"
-        // value={ markPlanet }
+        value={ markPlanet }
         onChange={ (e) => setMarkPlanet(e.target.value) }
       >
-        <option value="population">population</option>
-        <option value="orbital_period">orbital_period</option>
-        <option value="diameter">diameter</option>
-        <option value="rotation_period">rotation_period</option>
-        <option value="surface_water">surface_water</option>
+        {selection.map((planets, i) => (
+          <option key={ i }>
+            {planets}
+          </option>
+        ))}
       </select>
       <select
         name="igualdate"
@@ -96,9 +149,9 @@ const Table = () => {
         // value={ equalPlanets }
         onChange={ (e) => setEqualPlanets(e.target.value) }
       >
-        <option value="maior que">maior que</option>
-        <option value="menor que">menor que</option>
-        <option value="igual a">igual a</option>
+        {selection.map((planetas, i) => (
+          <option key={ i }>{ planetas }</option>
+        ))}
       </select>
       <input
         type="number"
@@ -122,6 +175,7 @@ const Table = () => {
       >
         Filtrar
       </button>
+      {answerForms}
       <table>
         <thead>
           <tr>

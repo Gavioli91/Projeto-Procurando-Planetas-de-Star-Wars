@@ -1,77 +1,77 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import PlanetContext from '../Context/PlanetContext';
 
 const Table = () => {
   const [planetName, setPlanetName] = useState('');
-  const { planet } = useContext(PlanetContext);
-  const [filterPlanet, setFilterPlanet] = useState([]);
+  const { planet, setPlanet } = useContext(PlanetContext);
+  // const [filterPlanet, setFilterPlanet] = useState([]);
   const [markPlanet, setMarkPlanet] = useState('population');
   const [equalPlanets, setEqualPlanets] = useState('maior que');
   const [theAmount, setTheAmount] = useState(0);
 
-  useEffect(() => {
-    setFilterPlanet(planet.filter((item) => item.name.includes(planetName)));
-  },
-  [planetName, planet]);
+  // useEffect(() => {
+  //  setPlanet(planet.filter((item) => item.name.includes(planetName)));
+  // },
+  // [planetName, planet]);
 
   const filterAmount = () => {
     if (equalPlanets === 'maior que') {
-      const star = planet.filter((name) => Number(name[markPlanet]) > Number(theAmount));
-      setFilterPlanet(star);
+      const star = planet.filter((item) => Number(item[markPlanet]) > Number(theAmount));
+      setPlanet(star);
     }
 
     if (equalPlanets === 'menor que') {
-      const star = planet.filter((name) => Number(name[markPlanet]) < Number(theAmount));
-      setFilterPlanet(star);
+      const star = planet.filter((item) => Number(item[markPlanet]) < Number(theAmount));
+      setPlanet(star);
     }
 
     if (equalPlanets === 'igual a') {
-      const str = planet.filter((name) => Number(name[markPlanet]) === Number(theAmount));
-      setFilterPlanet(str);
+      const str = planet.filter((item) => Number(item[markPlanet]) === Number(theAmount));
+      setPlanet(str);
     }
   };
 
-  const returnPlanet = filterPlanet.map((name, index) => (
-    <tbody key={ index }>
+  const returnPlanet = planet.map((item, i) => (
+    <tbody key={ i }>
       <tr>
         <td>
-          {name.name}
+          {item.name}
         </td>
         <td>
-          {name.rotation_period}
+          {item.rotation_period}
         </td>
         <td>
-          {name.orbital_period}
+          {item.orbital_period}
         </td>
         <td>
-          {name.diameter}
+          {item.diameter}
         </td>
         <td>
-          {name.climate}
+          {item.climate}
         </td>
         <td>
-          {name.gravity}
+          {item.gravity}
         </td>
         <td>
-          {name.terrain}
+          {item.terrain}
         </td>
         <td>
-          {name.surface_water}
+          {item.surface_water}
         </td>
         <td>
-          {name.population}
+          {item.population}
         </td>
         <td>
-          {name.films}
+          {item.films}
         </td>
         <td>
-          {name.created}
+          {item.created}
         </td>
         <td>
-          {name.edited}
+          {item.edited}
         </td>
         <td>
-          {name.url}
+          {item.url}
         </td>
       </tr>
     </tbody>

@@ -18,7 +18,7 @@ const PlanetProvider = ({ children }) => {
     };
     getPlanet();
   }, []);
-  const returnAnswer = { planet };
+  const returnAnswer = { planet, setPlanet };
   return (
     <PlanetContext.Provider value={ returnAnswer }>{children}</PlanetContext.Provider>
   );

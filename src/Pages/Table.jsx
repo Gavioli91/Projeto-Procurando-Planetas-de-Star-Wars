@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import PlanetContext from '../Context/PlanetContext';
 
 const Table = () => {
-  const [planetName, setPlanetName] = useState('');
+  const [names, setPlanetName] = useState('');
   const { planet, setPlanet } = useContext(PlanetContext);
   // const [filterPlanet, setFilterPlanet] = useState([]);
   const [markPlanet, setMarkPlanet] = useState('population');
@@ -31,7 +31,7 @@ const Table = () => {
     }
   };
 
-  const returnPlanet = planet.map((item, i) => (
+  const answer = planet.filter((item) => item.name.includes(names)).map((item, i) => (
     <tbody key={ i }>
       <tr>
         <td>
@@ -112,7 +112,7 @@ const Table = () => {
         type="text"
         data-testid="name-filter"
         name="name"
-        value={ planetName }
+        value={ names }
         onChange={ (e) => setPlanetName(e.target.value) }
       />
       <button
@@ -140,7 +140,7 @@ const Table = () => {
             <th>URL</th>
           </tr>
         </thead>
-        {returnPlanet}
+        {answer}
       </table>
     </div>
   );

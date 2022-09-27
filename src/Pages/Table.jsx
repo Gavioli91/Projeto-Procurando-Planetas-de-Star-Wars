@@ -1,35 +1,36 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import PlanetContext from '../Context/PlanetContext';
 
 const Table = () => {
   const [names, setPlanetName] = useState('');
   const { planet, setPlanet } = useContext(PlanetContext);
-  // const [filterPlanet, setFilterPlanet] = useState([]);
-  const [markPlanet, setMarkPlanet] = useState('population');
-  const [equalPlanets, setEqualPlanets] = useState('maior que');
-  const [theAmount, setTheAmount] = useState(0);
-
-  // useEffect(() => {
-  //  setPlanet(planet.filter((item) => item.name.includes(planetName)));
-  // },
-  // [planetName, planet]);
-
-  const filterAmount = () => {
-    if (equalPlanets === 'maior que') {
-      const star = planet.filter((item) => Number(item[markPlanet]) > Number(theAmount));
-      setPlanet(star);
-    }
-
-    if (equalPlanets === 'menor que') {
-      const star = planet.filter((item) => Number(item[markPlanet]) < Number(theAmount));
-      setPlanet(star);
-    }
-
-    if (equalPlanets === 'igual a') {
-      const str = planet.filter((item) => Number(item[markPlanet]) === Number(theAmount));
-      setPlanet(str);
-    }
-  };
+  const [selected, setSelected] = useState({
+    column: 'population',
+    condition: 'maior que',
+    value: '0',
+  });
+  const columnList = ['population', 'orbital_period', 'diameter',
+    'rotation_period', 'surface_water'];
+  const [selectedFilter, setSelectedFilter] = useState([]);
+  useEffect(() => {
+    selectedFilter.forEach((filter) => {
+      if (filter.condition === 'maior que') {
+        const star = planet
+          .filter((item) => Number(item[filter.column]) > Number(filter.value));
+        setPlanet(star);
+      }
+      if (filter.condition === 'menor que') {
+        const star = planet
+          .filter((item) => Number(item[filter.column]) < Number(filter.value));
+        setPlanet(star);
+      }
+      if (filter.condition === 'igual a') {
+        const star = planet.filter((item) => item[filter.column] === filter.value);
+        setPlanet(star);
+      }
+    });
+  },
+  [selectedFilter]);
 
   const answer = planet.filter((item) => item.name.includes(names)).map((item, i) => (
     <tbody key={ i }>
@@ -76,25 +77,26 @@ const Table = () => {
       </tr>
     </tbody>
   ));
+  const planetas = (opcao) => !selectedFilter.find((filtro) => opcao === filtro.column);
   return (
     <div>
       <select
         name="markPlanet"
         data-testid="column-filter"
-        value={ markPlanet }
-        onChange={ (e) => setMarkPlanet(e.target.value) }
+        value={ selected.column }
+        onChange={ (e) => setSelected({ ...selected, column: e.target.value }) }
       >
-        <option value="population">population</option>
-        <option value="orbital_period">orbital_period</option>
-        <option value="diameter">diameter</option>
-        <option value="rotation_period">rotation_period</option>
-        <option value="surface_water">surface_water</option>
+        {columnList
+          .filter(planetas).map((column) => (
+            <option value={ column } key={ column }>
+              {column}
+            </option>))}
       </select>
       <select
         name="equalPlanets"
         data-testid="comparison-filter"
-        value={ equalPlanets }
-        onChange={ (e) => setEqualPlanets(e.target.value) }
+        value={ selected.condition }
+        onChange={ (e) => setSelected({ ...selected, condition: e.target.value }) }
       >
         <option value="maior que">maior que</option>
         <option value="menor que">menor que</option>
@@ -105,8 +107,8 @@ const Table = () => {
         data-testid="value-filter"
         max="10000000"
         name="number"
-        value={ theAmount }
-        onChange={ (e) => setTheAmount(e.target.value) }
+        value={ selected.value }
+        onChange={ (e) => setSelected({ ...selected, value: e.target.value }) }
       />
       <input
         type="text"
@@ -118,7 +120,10 @@ const Table = () => {
       <button
         type="button"
         data-testid="button-filter"
-        onClick={ filterAmount }
+        onClick={ () => {
+          setSelectedFilter([...selectedFilter, selected]);
+          setSelected({ ...selected, column: columnList[0] });
+        } }
       >
         Filtrar
       </button>

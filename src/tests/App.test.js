@@ -11,65 +11,102 @@ describe('Testa o componente Table', () => {
   render(<App />);
   await waitFor(() => expect(global.fetch).toBeCalled());
 
-  const tableElement = screen.getByRole('table');
+  const componentTable = screen.getByRole('table');
   
-  expect(tableElement).toBeInTheDocument();
+  expect(componentTable).toBeInTheDocument();
   });
 
-  it('possui inputs e botões', async () => {
+  it('possui inputs', async () => {
     global.fetch = jest.fn(async () => ({json: async () => testData}));
   render(<App />);
 
   const columnFilter = screen.getByTestId('column-filter');
   const comparisonFilter = screen.getByTestId('comparison-filter');
   const valueFilter = screen.getByTestId('value-filter');
-  const filtrar = screen.getByTestId('button-filter');
+  const filter = screen.getByTestId('button-filter');
   const table = screen.getAllByRole('row');
 
   expect(columnFilter).toBeInTheDocument();
   expect(comparisonFilter).toBeInTheDocument();
   expect(valueFilter).toBeInTheDocument();
-  expect(filtrar).toBeInTheDocument();
-  expect(table).toHaveLength(11);
+  expect(filter).toBeInTheDocument();
+  expect(table).toHaveLength(1);
 });
 
-it('busca um planeta pelo seu nome', async () => {
+it('buscar um planeta pelo nome', async () => {
   global.fetch = jest.fn(async () => ({json: async () => testData}));
   render(<App />);
   await waitFor(() => expect(global.fetch).toBeCalled());
 
-  const planetName = screen.getByPlaceholderText(/filtrar por nome/i);
+  const names = screen.getByTestId('name-filter');
   const table = screen.getAllByRole('row');
 
   expect(table.length).toBe(11);
 
-  userEvent.type(planetName, 'tat');
-  expect(planetName.value).toBe('tat');
+  userEvent.type(names, 'tat');
+  expect(names.value).toBe('tat');
 
-  const rowFiltered = screen.getAllByRole('row');
-  expect(rowFiltered.length).toBe(2);
+  const select = screen.getAllByRole('row');
+  expect(select.length).toBe(1);
 });
 
-it('filtra a partir de um número', async () => {
-  global.fetch = jest.fn(async () => ({
-    json: async () => testData,
-  }));
+it('filtrar por número', async () => {
+  global.fetch = jest.fn(async () => ({json: async () => testData}));
   render(<App />);
   await waitFor(() => expect(global.fetch).toBeCalled());
 
-  const columnSelect = screen.getByTestId('column-filter');
-  const comparisonSelect = screen.getByTestId('comparison-filter');
-  const valueSelect = screen.getByTestId('value-filter');
+  const columnFilter = screen.getByTestId('column-filter');
+  const comparisonFilter = screen.getByTestId('comparison-filter');
+  const valueFilter = screen.getByTestId('value-filter');
   const buttonFilter = screen.getByTestId('button-filter');
 
-  userEvent.selectOptions(columnSelect, 'population');
-  userEvent.selectOptions(comparisonSelect, 'maior que');
-  userEvent.clear(valueSelect);
-  userEvent.type(valueSelect, '200000');
+  userEvent.selectOptions(columnFilter, 'population');
+  userEvent.selectOptions(comparisonFilter, 'maior que');
+  userEvent.clear(valueFilter);
+  userEvent.type(valueFilter, '200000');
   userEvent.click(buttonFilter);
 
-  const rowFiltered = screen.getAllByRole('row');
-  await waitFor(() => expect(rowFiltered.length).toBe(7));
+  const select = screen.getAllByRole('row');
+  await waitFor(() => expect(select.length).toBe(7));
 });
 
+it('filtrar por "menor que"', async () => {
+  global.fetch = jest.fn(async () => ({json: async () => testData}));
+  render(<App />);
+  await waitFor(() => expect(global.fetch).toBeCalled());
+
+  const columnFilter = screen.getByTestId('column-filter');
+  const comparisonFilter = screen.getByTestId('comparison-filter');
+  const valueFilter = screen.getByTestId('value-filter');
+  const buttonFilter = screen.getByTestId('button-filter');
+
+  userEvent.selectOptions(columnFilter, 'population');
+  userEvent.selectOptions(comparisonFilter, 'menor que');
+  userEvent.clear(valueFilter);
+  userEvent.type(valueFilter, '200000');
+  userEvent.click(buttonFilter);
+
+  const select = screen.getAllByRole('row');
+  await waitFor(() => expect(select.length).toBe(2));
+});
+
+it('filtrar por "igual a"', async () => {
+  global.fetch = jest.fn(async () => ({json: async () => testData}));
+  render(<App />);
+  await waitFor(() => expect(global.fetch).toBeCalled());
+
+  const columnFilter = screen.getByTestId('column-filter');
+  const comparisonFilter = screen.getByTestId('comparison-filter');
+  const valueFilter = screen.getByTestId('value-filter');
+  const buttonFilter = screen.getByTestId('button-filter');
+
+  userEvent.selectOptions(columnFilter, 'population');
+  userEvent.selectOptions(comparisonFilter, 'igual a');
+  userEvent.clear(valueFilter);
+  userEvent.type(valueFilter, '200000');
+  userEvent.click(buttonFilter);
+
+  const select = screen.getAllByRole('row');
+  await waitFor(() => expect(select.length).toBe(2));
+});
 });

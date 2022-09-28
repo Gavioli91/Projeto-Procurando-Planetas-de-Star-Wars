@@ -30,6 +30,7 @@ const Table = () => {
       }
     });
   },
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   [selectedFilter]);
 
   const answer = planet.filter((item) => item.name.includes(names)).map((item, i) => (
